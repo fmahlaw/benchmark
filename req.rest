@@ -1,0 +1,8 @@
+GET http://localhost:5000/find-part/info?query='i5 8250u'
+
+############
+GET http://localhost:5000/find-part/ppv?query=i5-8250u&price=1000
+
+
+###
+GET http://localhost:5000/home
