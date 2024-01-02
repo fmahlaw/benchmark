@@ -1,15 +1,15 @@
 /* eslint-disable no-undef */
 import express from 'express';
 import dotenv from 'dotenv';
-import finderRoute from './route/finderRoute.js';
 import cors from 'cors'
+
+import finderRoute from './route/finderRoute.js';
 
 dotenv.config();
 
 const app = express();
-
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || 'localhost';
+const PORT = process.env.PORT || 5000;
+const HOST = process.env.HOST || 'localhost'
 
 // JSON middleware to parse incoming requests with JSON payloads
 app.use(express.json());
