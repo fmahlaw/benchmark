@@ -7,7 +7,7 @@ function Form({ setDb, Ranked, db }) {
   const [input, setInput] = useState("i5 8250u");
   const [price, setPrice] = useState("1000");
 
-  const URL = `${import.meta.env.VITE_HOST}:${import.meta.env.VITE_PORT}`;
+  const URL = `${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
