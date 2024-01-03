@@ -14,10 +14,23 @@ function Form({ setDb, Ranked, db }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!price && !input) {
-      alert("fill input");
+    const nameExists = db.some((item) => item.name === input);
+    if (nameExists) {
+      console.log(`Name '${input}' already exists in the database.`);
+      alert(`${input} already exists `);
+      return; // Exit the function if the name already exists
+    }
+    if (!price.trim() && !input.trim()) {
+      alert("Please fill in both the CPU query and price.");
+      return;
+    } else if (!price.trim()) {
+      alert("Please enter the CPU price.");
+      return;
+    } else if (!input.trim()) {
+      alert("Please enter the CPU query.");
       return;
     }
+
     try {
       const response = await axios.get(
         `${URL}/find-part/ppv?price=${price}&query=${input}`

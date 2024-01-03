@@ -18,12 +18,6 @@ function App() {
     pricePerformanceValueMT,
     pricePerformanceValueST,
   }) => {
-    const nameExists = db.some((item) => item.name === query);
-    if (nameExists) {
-      console.log(`Name '${query}' already exists in the database.`);
-      return; // Exit the function if the name already exists
-    }
-
     setRankByProp(() => {
       const newRankedByProp = rankCPUsByProp(
         [
@@ -58,7 +52,8 @@ function App() {
                 setRankByProp={setRankByProp}
                 selectedProperty={selectedProperty}
                 setSelectedProperty={setSelectedProperty}
-                db={db} setDb={setDb}
+                db={db}
+                setDb={setDb}
               />
             </>
           )}
