@@ -58,7 +58,7 @@ function App() {
                 setRankByProp={setRankByProp}
                 selectedProperty={selectedProperty}
                 setSelectedProperty={setSelectedProperty}
-                db={db}
+                db={db} setDb={setDb}
               />
             </>
           )}

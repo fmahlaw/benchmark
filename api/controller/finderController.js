@@ -98,7 +98,7 @@ export async function PartPPV(req, res) {
     const pricePerformanceValueST =
       cpuPrice / parseFloat(cpuPerformanceRating.singleThreadRatingValue);
 
-    const ppv = { query,
+    const ppv = { query, price,
       pricePerformanceValueST,
       pricePerformanceValueMT,
       MT: cpuPerformanceRating.averageCPUMark,

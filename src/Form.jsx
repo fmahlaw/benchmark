@@ -7,11 +7,17 @@ function Form({ setDb, Ranked, db }) {
   const [input, setInput] = useState("i5 8250u");
   const [price, setPrice] = useState("1000");
 
-  const URL = `${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`;
+  const URL = `${import.meta.env.VITE_API_HOST}:${
+    import.meta.env.VITE_API_PORT
+  }`;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(URL);
+
+    if (!price && !input) {
+      alert("fill input");
+      return;
+    }
     try {
       const response = await axios.get(
         `${URL}/find-part/ppv?price=${price}&query=${input}`
@@ -34,6 +40,7 @@ function Form({ setDb, Ranked, db }) {
           ...prevDb,
           {
             name: query,
+            price,
             scoreST: parseInt(ST), // Convert to number if needed
             ppvST: parseFloat(pricePerformanceValueST), // Convert to number if needed
             scoreMT: parseInt(MT), // Convert to number if needed
