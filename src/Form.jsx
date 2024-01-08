@@ -3,9 +3,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function Form({ setDb, Ranked, db }) {
+function Form({ setDb, rankAndUpdate, db }) {
   const [input, setInput] = useState("i5 8250u");
   const [price, setPrice] = useState("1000");
+
+  const [mode, setMode] = useState("new"); // Default mode is 'new'
 
   const URL = `${import.meta.env.VITE_API_HOST}:${
     import.meta.env.VITE_API_PORT
@@ -14,12 +16,19 @@ function Form({ setDb, Ranked, db }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const nameExists = db.some((item) => item.name === input);
-    if (nameExists) {
-      console.log(`Name '${input}' already exists in the database.`);
-      alert(`${input} already exists `);
-      return; // Exit the function if the name already exists
+    const nameExists = db.some(
+      (item) => item.name.trim().toLowerCase() === input.trim().toLowerCase()
+    );
+
+    if ((mode === "new" && nameExists) || (mode !== "new" && !nameExists)) {
+      const message =
+        mode === "new"
+          ? `${input} already exists.`
+          : `${input} does not exist.`;
+      alert(message);
+      return; // Exit the function based on the mode and name existence
     }
+
     if (!price.trim() && !input.trim()) {
       alert("Please fill in both the CPU query and price.");
       return;
@@ -49,20 +58,36 @@ function Form({ setDb, Ranked, db }) {
       } = response.data.ppv;
 
       setDb((prevDb) => {
-        return [
-          ...prevDb,
-          {
-            name: query,
+        const existingIndex = prevDb.findIndex((item) => item.name === query);
+        if (existingIndex !== -1) {
+          // Update the existing entry
+          const updatedDb = [...prevDb];
+          updatedDb[existingIndex] = {
+            ...updatedDb[existingIndex],
             price,
-            scoreST: parseInt(ST), // Convert to number if needed
-            ppvST: parseFloat(pricePerformanceValueST), // Convert to number if needed
-            scoreMT: parseInt(MT), // Convert to number if needed
-            ppvMT: parseFloat(pricePerformanceValueMT), // Convert to number if needed
-          },
-        ];
+            scoreST: parseInt(ST),
+            ppvST: parseFloat(pricePerformanceValueST),
+            scoreMT: parseInt(MT),
+            ppvMT: parseFloat(pricePerformanceValueMT),
+          };
+          return updatedDb;
+        } else {
+          // Add a new entry
+          return [
+            ...prevDb,
+            {
+              name: query,
+              price,
+              scoreST: parseInt(ST),
+              ppvST: parseFloat(pricePerformanceValueST),
+              scoreMT: parseInt(MT),
+              ppvMT: parseFloat(pricePerformanceValueMT),
+            },
+          ];
+        }
       });
 
-      Ranked(response.data.ppv);
+      rankAndUpdate();
     } catch (error) {
       console.error("There was a problem with the request:", error);
     }
@@ -74,6 +99,10 @@ function Form({ setDb, Ranked, db }) {
 
   const handlePriceChange = (event) => {
     setPrice(event.target.value);
+  };
+
+  const handleModeChange = (event) => {
+    setMode(event.target.value);
   };
   return (
     <>
@@ -89,6 +118,26 @@ function Form({ setDb, Ranked, db }) {
             <label>
               Enter CPU Price:
               <input type="number" value={price} onChange={handlePriceChange} />
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                type="radio"
+                value="new"
+                checked={mode === "new"}
+                onChange={handleModeChange}
+              />
+              New
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="update"
+                checked={mode === "update"}
+                onChange={handleModeChange}
+              />
+              Update
             </label>
           </div>
           <div>

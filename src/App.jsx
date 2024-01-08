@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import RankDisplayer from "./Rank";
 import Form from "./Form";
@@ -11,36 +11,20 @@ function App() {
   const [db, setDb] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState("scoreST");
 
-  const Ranked = ({
-    query,
-    ST,
-    MT,
-    pricePerformanceValueMT,
-    pricePerformanceValueST,
-  }) => {
-    setRankByProp(() => {
-      const newRankedByProp = rankCPUsByProp(
-        [
-          ...db, // Use the updated db
-          {
-            name: query,
-            scoreST: parseInt(ST),
-            ppvST: parseFloat(pricePerformanceValueST),
-            scoreMT: parseInt(MT),
-            ppvMT: parseFloat(pricePerformanceValueMT),
-          },
-        ],
-        selectedProperty
-      );
-      // Check if this logs the updated data
-      return newRankedByProp;
-    }); // Update the state with the new ranked CPUs
+  useEffect(() => {
+    // Call the function to update the ranking whenever 'db' changes
+    rankAndUpdate();
+  }, [db]);
+
+  const rankAndUpdate = () => {
+    const newRankedByProp = rankCPUsByProp(db, selectedProperty);
+    setRankByProp(newRankedByProp);
   };
 
   return (
     <div className="container">
       <div className="left-section">
-        <Form setDb={setDb} Ranked={Ranked} db={db}></Form>
+        <Form setDb={setDb} rankAndUpdate={rankAndUpdate} db={db}></Form>
       </div>
       <div className="right-section">
         <div className="rank-page">
@@ -48,6 +32,7 @@ function App() {
             <>
               {" "}
               <RankDisplayer
+                rankAndUpdate={rankAndUpdate}
                 rankedByProp={rankedByProp}
                 setRankByProp={setRankByProp}
                 selectedProperty={selectedProperty}
